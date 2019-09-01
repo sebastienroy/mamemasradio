@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.2"
+   id="svg2"
+   x="0in"
+   y="0in"
+   width="0.2in"
+   height="0.44999999in"
+   viewBox="0 0 18.000001 40.499998">
+  <metadata
+     id="metadata31">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs29" />
+  <g
+     id="schematic"
+     transform="translate(14.670836,12.818355)">
+    <line
+       id="connector0pin"
+       x1="-14.205817"
+       y1="-6.2690954"
+       x2="-5.5108018"
+       y2="-6.2690954"
+       style="fill:none;stroke:#555555;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       id="connector0terminal"
+       x="-14.560802"
+       y="-6.3650961"
+       width="0.546"
+       height="0.208"
+       style="fill:none" />
+    <polyline
+       points="9.898,1.643 14.1,3.6 9.898,5.556"
+       id="polyline6"
+       transform="translate(-11.220772,-9.869096)"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <line
+       id="line"
+       x1="2.8727572"
+       y1="-6.2690954"
+       x2="-6.4462428"
+       y2="-6.2690954"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <text
+       class="text"
+       font-size="2.5pt"
+       x="-6.3608022"
+       y="-7.2890968"
+       id="text9"
+       style="font-size:3.125px;font-family:'Droid Sans';text-anchor:middle;fill:#555555;fill-opacity:1;stroke:none;stroke-width:0">1</text>
+    <line
+       id="connector1pin"
+       x1="-14.205817"
+       y1="2.7304039"
+       x2="-5.5108018"
+       y2="2.7304039"
+       style="fill:none;stroke:#555555;stroke-width:0.91697806;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       id="connector1terminal"
+       x="-14.560802"
+       y="2.6344042"
+       width="0.546"
+       height="0.208"
+       style="fill:none" />
+    <polyline
+       points="9.898,8.843 14.1,10.8 9.898,12.756"
+       id="polyline13"
+       transform="translate(-11.220772,-8.069096)"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <line
+       id="line15"
+       x1="2.8727572"
+       y1="2.7304039"
+       x2="-6.4462428"
+       y2="2.7304039"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <text
+       class="text"
+       font-size="2.5pt"
+       x="-6.3608022"
+       y="1.6144037"
+       id="text17"
+       style="font-size:3.125px;font-family:'Droid Sans';text-anchor:middle;fill:#555555;fill-opacity:1;stroke:none;stroke-width:0">2</text>
+    <line
+       id="connector2pin"
+       x1="-14.205817"
+       y1="11.730905"
+       x2="-5.5108018"
+       y2="11.730905"
+       style="fill:none;stroke:#555555;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       id="connector2terminal"
+       x="-14.560802"
+       y="11.634903"
+       width="0.546"
+       height="0.208"
+       style="fill:none" />
+    <polyline
+       points="9.898,16.043 14.1,18 9.898,19.956"
+       id="polyline21"
+       transform="translate(-11.220772,-6.269095)"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <line
+       id="line23"
+       x1="2.8727572"
+       y1="11.730905"
+       x2="-6.4462428"
+       y2="11.730905"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <text
+       class="text"
+       font-size="2.5pt"
+       x="-6.3608022"
+       y="10.710903"
+       id="text25"
+       style="font-size:3.125px;font-family:'Droid Sans';text-anchor:middle;fill:#555555;fill-opacity:1;stroke:none;stroke-width:0">3</text>
+    <line
+       id="connector3pin"
+       x1="-14.214427"
+       y1="20.772911"
+       x2="-5.5194116"
+       y2="20.772911"
+       style="fill:none;stroke:#555555;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       id="connector3terminal"
+       x="-14.569412"
+       y="20.67691"
+       width="0.546"
+       height="0.20800002"
+       style="fill:none;stroke-width:1" />
+    <polyline
+       points="9.898,16.043 14.1,18 9.898,19.956"
+       id="polyline21-5"
+       transform="translate(-11.229381,2.7729132)"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <line
+       id="line23-2"
+       x1="2.8641484"
+       y1="20.772911"
+       x2="-6.4548526"
+       y2="20.772911"
+       style="fill:none;stroke:#000000;stroke-width:0.89999998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none" />
+    <text
+       class="text"
+       font-size="2.5pt"
+       x="-6.3694115"
+       y="19.752911"
+       id="text25-0"
+       style="font-size:3.12500024px;font-family:'Droid Sans';text-anchor:middle;fill:#555555;fill-opacity:1;stroke:none;stroke-width:0">4</text>
+  </g>
+</svg>
