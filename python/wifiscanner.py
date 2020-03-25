@@ -6,12 +6,6 @@ Created on Sat Sep 15 16:36:16 2018
 @author: Sebastien Roy
 """
 
-#!/usr/bin/env python
-#
-# iwlistparse.py
-# Hugo Chargois - 17 jan. 2010 - v.0.1
-# Parses the output of iwlist scan into a table
-
 import subprocess
 import re
 
@@ -21,6 +15,18 @@ interface = "wlan0"
 
 
 class WifiCell:
+    """ WifiCell is a tool class used by WifiScanner to parse Wifi network
+    
+    Once parsed by WifiScanner, the cells can be requested for their properties
+    
+        Properties:
+            essid
+            quality
+            signal_level
+            cell_number
+            channel
+            frequency
+    """
     
     _cell_pattern = re.compile("(?<=Cell).*")
     _address_pattern = re.compile("(?<=Address:).*")
@@ -120,13 +126,60 @@ class WifiCell:
     def _get_essid(self):
         return self._essid
     essid = property(_get_essid)
+    
+    
+class WifiProbe:
+    """ This is is a tool class intended to get output strings from the system.
+        It is used by WifiScanner
+        For testing it may be replaced with test classes 
+    """
+
+    def get_iwgetid(self):
+        """ 
+            Returns the output of 'iwgetid' command, 
+            wich contains the interface information and the ESSID information 
+            from the wifi interface
+        """
+        proc = subprocess.Popen(["iwgetid"],stdout=subprocess.PIPE, universal_newlines=True)
+        out, err = proc.communicate()
+        return out
+    
+    def get_iwlist(self, interface = "wlan0"):
+        """
+            Returns the result of the system command 'iwlist wlan0 scan'
+            Wich contains the description of all accessible wifi cells
+        """
+        proc = subprocess.Popen(["iwlist", interface, "scan"],stdout=subprocess.PIPE, universal_newlines=True)
+        out, err = proc.communicate()
+        return out
+       
+        
 
 class WifiScanner:
+    """ WifiScanner is a tool used to extract wifi network information
     
-    def __init__(self, interface="wlan0"):
+        Once the wifi network is scanned, the WifiScanner can return a list
+        of reachable cells and also the current wifi cell.
+        A cell is a WifiCell object.
+        See WifiCell description for its properties
+        The essid can also be requested directly from WifiScanner object.
+    
+        Usage :
+            # scan wifi network
+            scanner = WifiScanner()
+            scanner.scan_wifi()
+            # display result
+            print("The wifi connected ESSID is : {}".format(scanner.essid))
+            print("There are currently {} reachable wifi cells".format(len(scanner.cells)))
+            print("The connected wifi quality is {} (1 is maximum)".format(scanner.current_cell.quality))
+            
+    """
+    
+    def __init__(self, probe = WifiProbe()):
         self._cells = []
         self._essid = ""
-        self._interface = interface
+        self._probe = probe
+        # self._interface = interface
         self._current_cell = None
         return
     
@@ -135,18 +188,19 @@ class WifiScanner:
         """
         self._current_cell = None
         self._cells = []
-        proc = subprocess.Popen(["iwgetid"],stdout=subprocess.PIPE, universal_newlines=True)
-        out, err = proc.communicate()
-        m = re.search("(?<=ESSID:).*", out)
+        
+        iwid = self._probe.get_iwgetid()
+        m = re.search("(?<=ESSID:).*", iwid)
         if m is not None:
             self._essid = m.group(0).strip("\"")
         else:
             self._essid = ""
         
-        proc = subprocess.Popen(["iwlist", "wlan0", "scan"],stdout=subprocess.PIPE, universal_newlines=True)
-        out, err = proc.communicate()
+        wlan = iwid.split()[0]
+        iwlist = self._probe.get_iwlist(wlan)
+        
         cell = None
-        for line in out.split("\n"):
+        for line in iwlist.split("\n"):
             cell_match = re.match("^[ ]*Cell ",line)
             if cell_match is not None:
                 # then create a new cell
@@ -216,14 +270,6 @@ if __name__ == "__main__":
     for line in lines[1:]:
         cell.append_line(line)
     t1 = time.clock()
-        
-    
-#    cell = WifiCell("          Cell 01 - Address: 00:24:01:76:8A:9F")
-#    cell.append_line("                    Channel:12")
-#    cell.append_line("                    Frequency:2.467 GHz (Channel 12)")
-#    cell.append_line("                    Quality=32/70  Signal level=-78 dBm")
-#    cell.append_line("                    ESSID:\"FreeWifi_secure\"")
-    
     
     print("Cell = %{}%".format(cell.cell_number))
     print("Address = %{}%".format(cell.address))
@@ -248,8 +294,6 @@ if __name__ == "__main__":
         print("ESSID = %{}%".format(cell.essid))
         print()
         
-    #print("Essid :", scanner.current_cell.essid)
-    #print("Wifi signal quality :", scanner.current_cell.quality)
     for i in range (0,10):
         scanner.scan_wifi()
         quality = 0 if scanner.current_cell is None else scanner.current_cell.quality

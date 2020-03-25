@@ -3,7 +3,7 @@
 """
 Created on Thu Sep 20 20:52:52 2018
 
-@author: pi
+@author: Sebastien ROY
 """
 from threading import Thread, RLock, Event
 import time

@@ -3,7 +3,7 @@
 """
 Created on Sun Sep 16 19:16:11 2018
 
-@author: pi
+@author: Sebastien ROY
 """
 
 from enum import Enum

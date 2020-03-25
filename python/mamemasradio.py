@@ -53,7 +53,6 @@ class WifiThread(Thread):
         while not self._stop:
             self._pause.wait()
             scanner.scan_wifi()
-            #quality = int(scanner.current_cell.quality * 5)
             
             quality = 0 if scanner.current_cell is None else scanner.current_cell.quality
             event = WifiEvent(quality)

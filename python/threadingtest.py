@@ -3,7 +3,7 @@
 """
 Created on Sun Sep 30 11:29:31 2018
 
-@author: pi
+@author: Sebastien ROY
 """
 
 from threading import Thread, Event
@@ -38,7 +38,6 @@ class WifiThread(Thread):
         while not self._stop:
             self._event.wait()
             scanner.scan_wifi()
-            #quality = int(scanner.current_cell.quality * 5)
             quality = scanner.current_cell.quality
             event = WifiEvent(quality)
             self._callback(self, event)
