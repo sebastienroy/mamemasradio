@@ -2,14 +2,14 @@ import unittest
 
 
 #import WifiCell
-from wifiscanner import WifiCell, WifiProbe , WifiScanner
+from wifiscanner import WifiCell, WifiProbe, WifiScanner
 
 class ProbeMockup():
     """ ProbeMockup replaces WifiProbe for testing purpose
     """
     def get_iwgetid(self):
         return "wlan0     ESSID:\"My Wifi Network\""
-    def get_iwlist(self, interface = "wlan0"):
+    def get_iwlist(self, interface="wlan0"):
         return "wlan0     Scan completed :\n\
           Cell 01 - Address: B0:B2:8F:A3:56:E4\n\
                     Channel:44\n\

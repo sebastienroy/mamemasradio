@@ -52,8 +52,12 @@ class ScrollingText:
         self._scroll_thread = ScrollingText.TimerThread(scroll_rate, self.scroll_text) 
         self.text = ""
         # The delay is currently computed as a number of refreshs
-        self._scroll_begin_delay = scroll_begin_delay // scroll_rate if scroll_rate != 0 else scroll_begin_delay
-        self._scroll_end_delay = scroll_end_delay // scroll_rate if scroll_rate != 0 else scroll_end_delay
+        self._scroll_begin_delay = scroll_begin_delay // scroll_rate \
+            if scroll_rate != 0 \
+            else scroll_begin_delay
+        self._scroll_end_delay = scroll_end_delay // scroll_rate \
+            if scroll_rate != 0 \
+            else scroll_end_delay
         self._begin_counter = self._scroll_begin_delay
         self._end_counter = self._scroll_end_delay
         self._scroll_position = 0
@@ -149,7 +153,7 @@ def _test_callback(originator, text):
     
 def _test_text_function():
     values = ["titi", "tata", "tutu", "toto"]
-    value = random.choice(values);
+    value = random.choice(values)
     print("text = ", value)
     return value
 
