@@ -14,8 +14,9 @@ import re
 from shutil import copyfile
 import logging
 
+import RPi.GPIO as GPIO
 
-from playingstate import PlayingState 
+from playingstate import PlayingState
 from choosestationstate import ChooseStationState
 from volumestate import VolumeState
 from powerbutton import PowerEvent
@@ -36,8 +37,7 @@ class OnState(RadioState):
         self._choosing_state = ChooseStationState(self._ctxt, self)
         self._volume_state = VolumeState(self._ctxt, self)
         self._sub_state = None
-       
-        
+
     def enter_state(self):
         self.logger.debug("Entering state")
         random_msg = self._ctxt.rsc.today_msg
@@ -45,23 +45,26 @@ class OnState(RadioState):
             random_msg = random.choice(self._ctxt.rsc.random_msgs)
         self._playing_state.random_msg = random_msg
         self._sub_state = self._playing_state
-        
+
         self._ctxt.lcd.clear()
         self._ctxt.lcd.backlight_enabled = True
         self._ctxt.power_button.led = True
         self._ctxt.wifi_thread.resume()
-        
+
+        # switch on the soundcard
+        mute_gpio = self._ctxt.rsc.mute_gpio
+        if mute_gpio != 0:
+            GPIO.output(mute_gpio, GPIO.HIGH)
+
         subprocess.call(["mpc", "play", str(self._track_nb)])
-        
+
         self._sub_state.enter_state()
-        return
-    
+
     def leave_state(self):
         self.logger.debug("Leaving state")
         self._ctxt.wifi_thread.pause()
         self._sub_state.leave_state()
-    
-    
+
     def handle_event(self, event):
         if type(event) is PowerButtonEvent and event.value == PowerEvent.SWITCH_PRESSED:
             self._owner.switch_radio(False)
@@ -73,13 +76,13 @@ class OnState(RadioState):
             self.change_volume(event)
         elif self._sub_state is not None:
             self._sub_state.handle_event(event)
-         
+
     def leave_volume(self):
         if self._sub_state == self._volume_state:
             self._sub_state.leave_state()
             self._sub_state = self._playing_state
             self._sub_state.enter_state()
-            
+
     def change_volume(self, event):
         if self._sub_state == self._volume_state:
             self._sub_state.handle_event(event)
@@ -88,7 +91,7 @@ class OnState(RadioState):
             self._sub_state.leave_state()
             self._sub_state = self._volume_state
             self._sub_state.enter_state()
-            
+
     def enter_choosing(self, status, track_nb=0):
         """ switches on/off the choosing status, depending on status parameter
         """
@@ -107,10 +110,7 @@ class OnState(RadioState):
                 subprocess.call(["mpc", "play", str(self._track_nb)])
             self._sub_state = self._playing_state
         self._sub_state.enter_state()
-           
-        return
 
-    
 class OffState(RadioState):
     """ This class defines the behaviour of the off state
     """
@@ -121,36 +121,40 @@ class OffState(RadioState):
         self._passwd_state = PasswdState(context, self)
         self._sleep_state = SleepState(context, self)
         self._sub_state = None
-        
+
     def handle_event(self, event):
         self._sub_state.handle_event(event)
-            
+
     def enter_state(self):
         self.logger.debug("Entering state")
         self._ctxt.power_button.led = False      
-        proc = subprocess.Popen(["mpc", "stop"],stdout=subprocess.PIPE, universal_newlines=True)
+        proc = subprocess.Popen(["mpc", "stop"], stdout=subprocess.PIPE, universal_newlines=True)
         out, err = proc.communicate()
+        # switch off the soundcard
+        mute_gpio = self._ctxt.rsc.mute_gpio
+        if mute_gpio != 0:
+            GPIO.output(mute_gpio, GPIO.LOW)
+
         self._sub_state = self._sleep_state
         self._sub_state.enter_state()
-        
+
     def switch_radio(self, state):
         self._owner.switch_radio(state)
-        
+
     def enter_choose_essid(self):
         self._sub_state.leave_state()
         self._sub_state = self._essid_state
         self._sub_state.enter_state()
-        
+
     def enter_choose_pwd(self):
         self._sub_state.leave_state()
         self._sub_state = self._passwd_state
         self._sub_state.enter_state()
-       
-        
+
     def leave_state(self):
         self.logger.debug("Leaving state")
         self._sub_state.leave_state()
-        
+
     def wifi_configured(self):
         essid = self._essid_state.essid
         password = self._passwd_state.password
@@ -173,8 +177,7 @@ class OffState(RadioState):
         # The reboot shall be written in the config file
         reboot_cmd = self._ctxt.rsc.wifi_post_validate
         subprocess.call(reboot_cmd.split(" "))
-        
-        
+
 def backup_file(filename, last=99):
     logger = logging.getLogger(__name__)
     if not os.path.exists(filename):
@@ -195,19 +198,17 @@ def backup_file(filename, last=99):
         
     if nb < last:
         backup_file(backup_filename, last)
-    
+
     copyfile(filename, backup_filename)
     logger.debug("End of backup of : %s", filename)
-    
-        
     return
-        
+
 if __name__ == "__main__":
     essid = "LesMetMs"
     password = "Tm1pC,mtvptf2l\'o"
     wpa_content = "network={{\n    ssid=\"{}\"\n    psk=\"{}\"\n}}".format(essid, password)
     print(wpa_content)
-    
+
     filename = "/home/pi/python/tests/test.txt"
     if os.path.exists(filename):
         print("Creating a backup of file :", filename)
@@ -217,7 +218,7 @@ if __name__ == "__main__":
         print("Dirname :", directory)
         print("Join :", os.path.join(directory, basename))
         backup_file(filename, 6)
-    
+
     f = open(filename, "w")
     f.write(wpa_content)
     f.close()

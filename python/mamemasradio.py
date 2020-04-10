@@ -91,6 +91,7 @@ class MamemasRadio:
         self._rsc = Resources(conf_path)
         self._event_queue = Queue()
         self._init_playlist()
+        self._init_soundcard()
         lcd = self._init_lcd()
         power_button = PowerButton(self._rsc.power_switch, self._rsc.power_led, None)
         power_button.callback = self._power_callback
@@ -181,6 +182,12 @@ class MamemasRadio:
         lcd.create_char(2, enter_char)
         return lcd
 
+    def _init_soundcard(self):
+        mute_gpio = self._rsc.mute_gpio
+        print("MamemasRadio, mute_gpio = ", mute_gpio)
+        if(mute_gpio != 0):
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(mute_gpio, GPIO.OUT, initial=GPIO.LOW)
 
     def start(self):
         """ This starts all the state model of the radio
