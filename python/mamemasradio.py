@@ -227,6 +227,7 @@ if __name__ == "__main__":
                             default="info")
     arg_parser.add_argument("-lf", "--logfile",
                             help="define the logfile, console if none")
+    # TODO : check how to use the logfile argument
     args = arg_parser.parse_args()
 
     levels = {"debug": logging.DEBUG,
@@ -234,13 +235,12 @@ if __name__ == "__main__":
               "warning": logging.WARNING,
               "error": logging.ERROR}
     logging.basicConfig(format='%(levelname)s:%(asctime)s:%(message)s',
-                        level=logging.DEBUG
+                        level=levels[args.log_level]
                         #filename=args.logfile
                         )
     logger = logging.getLogger(__name__)
 
     logging.info("Arguments : %s", args)
-    logging.debug("This is debug information")
 
     radio = MamemasRadio(args.config)
     radio.start()
