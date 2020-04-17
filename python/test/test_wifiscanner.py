@@ -1,7 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Sep 23 15:12:37 2018
+
+@author: Sebastien Roy
+"""
 import unittest
 
-
-#import WifiCell
 from wifiscanner import WifiCell, WifiProbe, WifiScanner
 
 class ProbeMockup():

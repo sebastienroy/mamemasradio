@@ -12,7 +12,18 @@ import logging
 
 
 class ScrollingText:
-        
+    """ Tool class that manages a string that scrolls into a given frame.
+        The Scrolling text is initialized using a text function, a text callback,
+        a refresh rate, a scoll rate. In order to make easier the reading at 
+        the begin and at the end of ths scrolling, there is also a begin and
+        and end scrolling delay.
+        The refresh rate is used to refresh the content of the text, using
+        the text function
+        The scrolling text may be used for instance to manage the text displayed 
+        on a 4x20 LCD screen.
+        stop() function should be used in order to free resources
+    """
+
     class TimerThread(Thread):
         def __init__(self, period, callback):
             Thread.__init__(self)
@@ -21,26 +32,28 @@ class ScrollingText:
             self._stop = False
             self._pause = Event()
             self._pause.set()
+            print("initialized")
 
         def stop(self):
             self._stop = True
-                        
+            print("stoped")
+
         def run(self):
             while not self._stop:
                 self._pause.wait()
-                
-                time.sleep(self._period)
                 self._callback()
-                
+
+                time.sleep(self._period)
+
         def pause(self):
             self._pause.clear()
-    
+
         #should just resume the thread
         def resume(self):
             self._pause.set()
-     
-    
-    def __init__(self, text_function, update_callback, display_size, refresh_rate=0, 
+
+
+    def __init__(self, text_function, update_callback, display_size, refresh_rate=0,
                  scroll_begin_delay=3, scroll_end_delay=3, scroll_rate=0.5):
         self.logger = logging.getLogger(type(self).__name__)
         self._text_function = text_function
@@ -49,7 +62,7 @@ class ScrollingText:
         self._refresh_rate = refresh_rate
         self._scroll_rate = scroll_rate
         self._update_thread = ScrollingText.TimerThread(refresh_rate, self.update_text)
-        self._scroll_thread = ScrollingText.TimerThread(scroll_rate, self.scroll_text) 
+        self._scroll_thread = ScrollingText.TimerThread(scroll_rate, self.scroll_text)
         self.text = ""
         # The delay is currently computed as a number of refreshs
         self._scroll_begin_delay = scroll_begin_delay // scroll_rate \
@@ -63,28 +76,33 @@ class ScrollingText:
         self._scroll_position = 0
         self._lock = RLock()
         self._paused = False
-        
+
     def start(self):
+        """ Can only be called once
+        """
         self.text = self._text_function()
         self.send_update(self.text)
         if self._refresh_rate > 0:
             self._update_thread.start()
         self._scroll_thread.start()
-    
+
     def stop(self):
+        """ Be carefull, one stopped, the scrolling text cannot be restarted
+            Use pause() and resume() instead.
+        """
         self._paused = True
         self._scroll_thread.stop()
         if self._refresh_rate > 0:
             self._update_thread.stop()
-           
-        
+
+
     def pause(self):
         with self._lock:
             self._paused = True
             self._scroll_thread.pause()
             if self._refresh_rate > 0:
                 self._update_thread.pause()
-        
+
     def resume(self):
         self.text = self._text_function()
         self.logger.debug("Resuming {} with text={}".format(self, self.text))
@@ -92,7 +110,7 @@ class ScrollingText:
         with self._lock:
             self._paused = False
             # when resuming, restart the scrolling
-            self.scroll_position = 0
+            self._scroll_position = 0
             self._begin_counter = self._scroll_begin_delay
             self._end_counter = self._scroll_end_delay
             self._scroll_thread.resume()
@@ -104,8 +122,8 @@ class ScrollingText:
             self._update_callback(self, value)
         else:
             self._update_callback(self, value[:self._display_size])
-       
-    
+
+
     def update_text(self):
         with self._lock:
             if self._paused:
@@ -113,11 +131,11 @@ class ScrollingText:
             new_text = self._text_function()
             if new_text != self.text:       # text changed !
                 self.text = new_text
-                self.scroll_position = 0
+                self._scroll_position = 0
                 self._begin_counter = self._scroll_begin_delay
                 self._end_counter = self._scroll_end_delay
                 self.send_update(new_text)
-    
+
     def scroll_text(self):
         with self._lock:
             # check if a scrolling is necessary
@@ -129,28 +147,28 @@ class ScrollingText:
             elif self._begin_counter > 0:
                 self._begin_counter -= 1
             # check if not at the end of the scroll
-            elif (self.scroll_position + self._display_size) < len(self.text):
-                self.scroll_position += 1
-                displayed_text = self.text[self.scroll_position : self.scroll_position + self._display_size]
+            elif (self._scroll_position + self._display_size) < len(self.text):
+                self._scroll_position += 1
+                displayed_text = self.text[self._scroll_position : self._scroll_position + self._display_size]
                 self._update_callback(self, displayed_text)
             # check if it the pause at the end of the scrolling
             elif self._end_counter > 0:
                 self._end_counter -= 1
             # restart at the beginning
             else:
-                self.scroll_position = 0
+                self._scroll_position = 0
                 self._begin_counter = self._scroll_begin_delay
                 self._end_counter = self._scroll_end_delay
                 self._update_callback(self, self.text[0:self._display_size])
-                
-    
+
+
     def _get_text(self):
         with self._lock:
             return self.text
-    
+
 def _test_callback(originator, text):
     print("Update from {} with text : {}".format(originator, text))
-    
+
 def _test_text_function():
     values = ["titi", "tata", "tutu", "toto"]
     value = random.choice(values)
@@ -162,20 +180,4 @@ def _test_text_function2():
 
 def _test_long_text():
     return "C'est l'histoire d'un monsieur"
-    
-    
-if __name__ == "__main__":
-    scroll = ScrollingText(_test_long_text, _test_callback, 10, 1)
-    print("Strarting scrolling text...")
-    try:
-        scroll.start()
-        while True:
-            input("Press enter to pause")
-            scroll.pause()
-            input("Press enter to resume")
-            scroll.resume()
-    finally:
-        scroll.stop()
-    
-    
-        
+
