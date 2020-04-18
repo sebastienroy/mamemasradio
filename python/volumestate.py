@@ -33,32 +33,32 @@ class VolumeState(RadioState):
         self._increment = ctxt.rsc.volume_increment
         # initialize volume from mpc
         try:
-            proc = subprocess.Popen(["mpc", "volume"], 
-                                    stdout=subprocess.PIPE, 
+            proc = subprocess.Popen(["mpc", "volume"],
+                                    stdout=subprocess.PIPE,
                                     universal_newlines=True)
             out, err = proc.communicate()
             self._volume = int(out.split(":")[1].strip().strip("%"))
         except:
             self._volume = 20
-           
-    
-    def enter_state(self):  
+
+
+    def enter_state(self):
         self.logger.debug("Entering state")
         self.display_volume()
         self._reset_timer()
         return
-    
-    def leave_state(self):   
+
+    def leave_state(self):
         self.logger.debug("Leaving state")
         return
-    
+
     def handle_event(self, event):
         if type(event) is VolumeButtonEvent:
             self.increment(event.value)
             self.display_volume()
             self._reset_timer()
         return
-    
+
     def display_volume(self):
         # line 2 is empty
         self._ctxt.lcd.cursor_pos = (2, 0)
@@ -68,7 +68,7 @@ class VolumeState(RadioState):
         self._ctxt.lcd.cursor_pos = (3, 0)
         self._ctxt.lcd.write_string(msg.format(int(self._volume)).ljust(20))
         return
-    
+
     def increment(self, value):
         # increment or decrement
         if value == EncoderEvent.CCW_ROTATION :
@@ -82,18 +82,18 @@ class VolumeState(RadioState):
             self._volume = 100
         # modify system volume
         self.set_volume()
-        
-    
+
+
     def set_volume(self):
         vol = int(self._volume)
         self.logger.debug("Setting volume : %s %s %s", "mpc", "volume", str(vol))
         subprocess.call(["mpc", "volume", str(vol)])
         return
-    
+
     def _reset_timer(self):
         if self._timeout is not None:
             self._timeout.cancel()
-        self._timeout = Timer(self._timeout_value, 
+        self._timeout = Timer(self._timeout_value,
                               timeout_callback,
                               args=[self._ctxt.event_queue])
         self._timeout.start()

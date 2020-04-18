@@ -57,6 +57,9 @@ class Resources:
     MUTE_ENTRY = "mute"
 
     SLEEP_SECTION = "sleep"
+    
+    CLOCK_SECTION = "clock"
+    CLOCK_FORMAT_ENTRY = "format"
 
     def __init__(self, config_file_path):
         self.logger = logging.getLogger(type(self).__name__)
@@ -130,6 +133,10 @@ class Resources:
     def _get_sleep_lines(self):
         return self._sleep_lines
 
+    def _get_clock_format(self):
+        return self._configParser.get(Resources.CLOCK_SECTION,
+                                      Resources.CLOCK_FORMAT_ENTRY)
+
     def _get_wifi_filename(self):
         return self._configParser.get(Resources.WIFI_SECTION,
                                       Resources.WIFI_FILENAME_ENTRY)
@@ -188,6 +195,7 @@ class Resources:
     power_switch = property(fget=_get_power_switch)
     power_led = property(fget=_get_power_led)
     sleep_lines = property(fget=_get_sleep_lines)
+    clock_format = property(fget=_get_clock_format)
     wifi_filename = property(fget=_get_wifi_filename)
     wifi_template = property(fget=_get_wifi_template)
     wifi_post_validate = property(fget=_get_wifi_post_validate)
