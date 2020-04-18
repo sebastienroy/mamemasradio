@@ -9,6 +9,7 @@ from RPLCD.i2c import CharLCD
 from resources import Resources
 import subprocess
 import logging
+import datetime
 
 from radioevents import WifiEvent, TextUpdateEvent, TextFieldType, StationButtonEvent
 from encoder import EncoderEvent
@@ -46,13 +47,12 @@ class PlayingState(RadioState):
         self._name_display.start()
         # The title of the track is updated automatically every 5 seconds
         self._title_display = ScrollingText(self._track_title, self._track_title_callback,
-                                            display_size=20, refresh_rate=5,
+                                            display_size=20, refresh_rate=1,
                                            scroll_begin_delay=self._rsc.scroll_begin,
                                            scroll_end_delay=self._rsc.scroll_end,
                                            scroll_rate=self._rsc.scroll_rate)
         self._title_display.pause()
         self._title_display.start()
-
 
     def enter_state(self):
         self.logger.debug("Entering state")
@@ -113,9 +113,12 @@ class PlayingState(RadioState):
         proc = subprocess.Popen(["mpc", "--format=%title%", "current"],
                                 stdout=subprocess.PIPE, universal_newlines=True)
         out, err = proc.communicate()
-        title = out.strip() if out.strip() else self._rsc.get_i18n(Resources.NO_TITLE_ENTRY)
-        return title
-
+        title = out.strip()
+        if len(title) > 0:
+            return title
+        else:
+            dtg = datetime.datetime.today()
+            return dtg.strftime(self._ctxt.rsc.clock_format).rjust(20)
 
     def handle_event(self, event):
         if type(event) is WifiEvent:

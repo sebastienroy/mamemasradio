@@ -27,7 +27,7 @@ class SleepState(RadioState):
 
     def _get_time_text(self):
         dtg = datetime.datetime.today()
-        return dtg.strftime(self._ctxt.rsc.sleep_clock_format)
+        return dtg.strftime(self._ctxt.rsc.clock_format)
 
     def _time_callback(self, originator, value):
         self.logger.debug("_time_callback called")
