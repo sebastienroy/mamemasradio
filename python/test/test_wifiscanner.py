@@ -80,12 +80,12 @@ class ProbeMockup():
                     IE: Unknown: DD180050F2020101000003A4000027A4000042435E0062322F00\n\
                     IE: Unknown: DD050016328000\n\
                     IE: Unknown: DD080050F21102000000\n"
-    
+
 
 class test_WifiScanner(unittest.TestCase):
-    
-    
-    
+
+
+
     def setUp(self):
         self.cell_output = "          Cell 05 - Address: CA:FB:1E:B1:CA:2F\n\
                     Channel:12\n\
@@ -121,15 +121,15 @@ class test_WifiScanner(unittest.TestCase):
         probe = WifiProbe()
         self.assertIsNotNone(probe.get_iwgetid())
         self.assertIsNotNone(probe.get_iwlist())
- 
-        
+
+
     def test_WifiCell(self):
-        
+
         lines = self.cell_output.split("\n")
         cell = WifiCell(lines[0])
         for line in lines[1:]:
             cell.append_line(line)
-                
+
         self.assertEqual(cell.cell_number, 5)
         self.assertEqual(cell.address, "CA:FB:1E:B1:CA:2F")
         self.assertEqual(cell.channel, 12)
@@ -137,21 +137,20 @@ class test_WifiScanner(unittest.TestCase):
         self.assertAlmostEqual(cell.quality, 32./70.)
         self.assertEqual(cell.signal_level, -78)
         self.assertEqual(cell.essid, "FreeWifi_secure")
-        
+
     def test_WifiScanner(self):
         #scanner = WifiScanner(ProbeMockup())
         #scanner.scan_wifi()
         scanner = WifiScanner()
         probe = ProbeMockup()
         scanner = WifiScanner(probe)
-        
+
         scanner.scan_wifi()
         self.assertEqual(scanner.essid, "My Wifi Network")
         self.assertEqual(len(scanner.cells),2)
         self.assertEqual(scanner.current_cell.essid, "My Wifi Network")
         self.assertAlmostEqual(scanner.current_cell.quality, 51./70.)
-        
+
         self.assertTrue(True)
 
 
-        

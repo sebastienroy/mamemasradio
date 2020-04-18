@@ -16,9 +16,9 @@ interface = "wlan0"
 
 class WifiCell:
     """ WifiCell is a tool class used by WifiScanner to parse Wifi network
-    
+
     Once parsed by WifiScanner, the cells can be requested for their properties
-    
+
         Properties:
             essid
             quality
@@ -27,7 +27,7 @@ class WifiCell:
             channel
             frequency
     """
-    
+
     _cell_pattern = re.compile("(?<=Cell).*")
     _address_pattern = re.compile("(?<=Address:).*")
     _channel_pattern = re.compile("(?<=Channel:).*")
@@ -35,7 +35,7 @@ class WifiCell:
     _quality_pattern = re.compile("(?<=Quality=).*")
     _signal_pattern = re.compile("(?<=Signal level=).*")
     _essid_pattern = re.compile("(?<=ESSID:).*")
-    
+
     def __init__(self,line):
         self._cell_number = 0
         self._address = ""
@@ -46,23 +46,23 @@ class WifiCell:
         self._frequency = 0.0
         self._parse_cell(line)
         return
-    
+
     def _parse_cell(self, line):
         m = WifiCell._cell_pattern.search(line)
         if m is not None:
             content = m.group(0).split("-")
-            try:             
+            try:
                 self._cell_number = int(content[0])
                 address = content[1].strip();
                 m2 = WifiCell._address_pattern.search(address)
                 if m2 is not None:
                     self._address = m2.group(0).strip()
-                    
+
             except :
                 #TODO : handle that
                 print("Exception in parsing")
         return
-    
+
     def append_line(self, line):
         """This methods try to find the following properties in the line :
             Channel
@@ -97,16 +97,16 @@ class WifiCell:
                 self._essid = match.group(0).strip().strip("\"")
                 return
         return
-                
-    
+
+
     def _get_cell_number(self):
         return self._cell_number
     cell_number = property(_get_cell_number)
-    
+
     def _get_address(self):
         return self._address
     address = property(_get_address)
-    
+
     def _get_channel(self):
         return self._channel
     channel = property(_get_channel)
@@ -114,7 +114,7 @@ class WifiCell:
     def _get_frequency(self):
         return self._frequency
     frequency = property(_get_frequency)
-    
+
     def _get_quality(self):
         return self._quality
     quality = property(_get_quality)
@@ -126,24 +126,24 @@ class WifiCell:
     def _get_essid(self):
         return self._essid
     essid = property(_get_essid)
-    
-    
+
+
 class WifiProbe:
     """ This is is a tool class intended to get output strings from the system.
         It is used by WifiScanner
-        For testing it may be replaced with test classes 
+        For testing it may be replaced with test classes
     """
 
     def get_iwgetid(self):
-        """ 
-            Returns the output of 'iwgetid' command, 
-            wich contains the interface information and the ESSID information 
+        """
+            Returns the output of 'iwgetid' command,
+            wich contains the interface information and the ESSID information
             from the wifi interface
         """
         proc = subprocess.Popen(["iwgetid"],stdout=subprocess.PIPE, universal_newlines=True)
         out, err = proc.communicate()
         return out
-    
+
     def get_iwlist(self, interface = "wlan0"):
         """
             Returns the result of the system command 'iwlist wlan0 scan'
@@ -152,18 +152,18 @@ class WifiProbe:
         proc = subprocess.Popen(["iwlist", interface, "scan"],stdout=subprocess.PIPE, universal_newlines=True)
         out, err = proc.communicate()
         return out
-       
-        
+
+
 
 class WifiScanner:
     """ WifiScanner is a tool used to extract wifi network information
-    
+
         Once the wifi network is scanned, the WifiScanner can return a list
         of reachable cells and also the current wifi cell.
         A cell is a WifiCell object.
         See WifiCell description for its properties
         The essid can also be requested directly from WifiScanner object.
-    
+
         Usage :
             # scan wifi network
             scanner = WifiScanner()
@@ -172,9 +172,9 @@ class WifiScanner:
             print("The wifi connected ESSID is : {}".format(scanner.essid))
             print("There are currently {} reachable wifi cells".format(len(scanner.cells)))
             print("The connected wifi quality is {} (1 is maximum)".format(scanner.current_cell.quality))
-            
+
     """
-    
+
     def __init__(self, probe = WifiProbe()):
         self._cells = []
         self._essid = ""
@@ -182,23 +182,23 @@ class WifiScanner:
         # self._interface = interface
         self._current_cell = None
         return
-    
+
     def scan_wifi(self):
         """ scans the wifi
         """
         self._current_cell = None
         self._cells = []
-        
+
         iwid = self._probe.get_iwgetid()
         m = re.search("(?<=ESSID:).*", iwid)
         if m is not None:
             self._essid = m.group(0).strip("\"")
         else:
             self._essid = ""
-        
+
         wlan = iwid.split()[0]
         iwlist = self._probe.get_iwlist(wlan)
-        
+
         cell = None
         for line in iwlist.split("\n"):
             cell_match = re.match("^[ ]*Cell ",line)
@@ -209,24 +209,24 @@ class WifiScanner:
             elif cell is not None:
                 cell.append_line(line)
             # check if the previous parsed cell is the used one
-            
+
         for cell in self._cells:
             if self._essid and cell.essid == self._essid:
                 self._current_cell = cell
                 break
-        
+
     def _get_essid(self):
         return self._essid
-    
+
     def _get_interface(self):
         return self._interface
-        
+
     def _get_cells(self):
         return self._cells
-    
+
     def _get_current_cell(self):
         return self._current_cell
-            
+
     essid = property(_get_essid)
     interface = property(_get_interface)
     cells = property(_get_cells)
@@ -234,7 +234,7 @@ class WifiScanner:
 
 
 if __name__ == "__main__":
-    
+
     output = "          Cell 05 - Address: CA:FB:1E:B1:CA:2F\n\
                     Channel:12\n\
                     Frequency:2.467 GHz (Channel 12)\n\
@@ -270,7 +270,7 @@ if __name__ == "__main__":
     for line in lines[1:]:
         cell.append_line(line)
     t1 = time.clock()
-    
+
     print("Cell = %{}%".format(cell.cell_number))
     print("Address = %{}%".format(cell.address))
     print("Channel = %{}%".format(cell.channel))
@@ -279,7 +279,7 @@ if __name__ == "__main__":
     print("Signal level = %{}%".format(cell.signal_level))
     print("ESSID = %{}%".format(cell.essid))
     print("Process time :", t1-t0)
-    
+
     print("---------------------------")
     scanner = WifiScanner()
     scanner.scan_wifi()
@@ -293,7 +293,7 @@ if __name__ == "__main__":
         print("Signal level = %{}%".format(cell.signal_level))
         print("ESSID = %{}%".format(cell.essid))
         print()
-        
+
     for i in range (0,10):
         scanner.scan_wifi()
         quality = 0 if scanner.current_cell is None else scanner.current_cell.quality
@@ -301,4 +301,4 @@ if __name__ == "__main__":
         if not scanner.current_cell is None:
             print("Essid :", scanner.current_cell.essid)
         time.sleep(5)
- 
+

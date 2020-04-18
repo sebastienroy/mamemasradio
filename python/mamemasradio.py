@@ -21,7 +21,8 @@ from resources import Resources
 from wifiscanner import WifiScanner
 from radioevents import WifiEvent, StationButtonEvent, VolumeButtonEvent, PowerButtonEvent
 from radiocontext import RadioContext
-from onoffstate import OnState, OffState
+from onstate import OnState
+from offstate import OffState
 from powerbutton import PowerButton
 from encoder import RotaryEncoder
 
@@ -43,7 +44,7 @@ class WifiThread(Thread):
         """ Pauses the thread
         """
         self._pause.clear()
- 
+
     def resume(self):
         """ Resules the thread
         """
@@ -211,7 +212,11 @@ class MamemasRadio:
                 self._ctxt.power_button.clear()
                 self._ctxt.station_button.clear()
                 self._ctxt.volume_button.clear()
+                GPIO.setup(self._rsc.mute_gpio, GPIO.OUT, initial=GPIO.HIGH)
+                GPIO.setup(self._rsc.mute_gpio, GPIO.IN)
                 GPIO.cleanup()
+                self._on_state.cleanup()
+                self._off_state.cleanup()
                 stopped = True
 
 
@@ -244,4 +249,3 @@ if __name__ == "__main__":
 
     radio = MamemasRadio(args.config)
     radio.start()
-    

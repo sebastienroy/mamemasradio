@@ -19,20 +19,20 @@ class WifiThread(Thread):
         self._stop = False
         self._event = Event()
         self._event.set()
-        
+
     def stop(self):
         self._stop = True
         return
-    
+
     def pause(self):
         self._event.clear()
         return
-    
+
     def resume(self):
         self._event.set()
         return
-        
-        
+
+
     def run(self):
         scanner = WifiScanner()
         while not self._stop:
@@ -42,10 +42,10 @@ class WifiThread(Thread):
             event = WifiEvent(quality)
             self._callback(self, event)
             time.sleep(1)
-            
+
 def _test_callback(originator, event):
-    print(event)           
-            
+    print(event)
+
 if __name__ == "__main__":
     thread = WifiThread(_test_callback)
     thread.start()
@@ -53,5 +53,5 @@ if __name__ == "__main__":
     thread.pause()
     input("Enter to resume the thread")
     thread.resume()
-    input("Enter to finish")   
-    thread.stop()     
+    input("Enter to finish")
+    thread.stop()
