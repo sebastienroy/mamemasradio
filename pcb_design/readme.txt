@@ -6,3 +6,9 @@ webradio_pcb.fzz document describes the main pcb of the web radio. It is used to
 accessories_pcb.fzz document describes accessories pcb. The described pcb has to be cut into 6 parts : 4 rotary encoder pcb and 2 power button pcb. So, parts described by this document can be used for the build of 2 web radios.
 
 The connection between the main pcb and the accessories pcb use F2510-4P connectors. The male headers are soldered on the pcbs, the female headers are wired are used on the wires from the main pcb to the accessories pcb.
+
+Main PCB and accessories PCB may be manufactured directly using these links :
+Main PCB :
+https://aisler.net/p/ENDPOVDQ
+Accessories PCB :
+https://aisler.net/p/QHNAFNPG
