@@ -19,9 +19,3 @@ accessories_pcb.fzz document describes accessories pcb. The described pcb has to
 The connection between the main pcb and the accessories pcb use F2510-4P connectors. The male F2510-4P headers are soldered on the main pcbs, male dupont headers are soldered on the accessories pcb.
 Wires are used between them.
 the female headers are wired are used on the wires from the main pcb to the accessories pcb.
-
-Main PCB and accessories PCB may be manufactured directly using these links :
-Main PCB :
-https://aisler.net/p/ENDPOVDQ
-Accessories PCB :
-https://aisler.net/p/QHNAFNPG
