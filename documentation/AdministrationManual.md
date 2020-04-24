@@ -66,11 +66,24 @@ The sections that can be modified easily, without any particular risk are  the f
 * Dated_messages
 * Playlist
 ### Random_messages
+In the random message section (that begins with `[random_messages]`), all the entries are messages that will be displayed randomly on the second line of the radio lcd display.
+These messages are displayed randomly when there is no message related to the current date in the section `[dated_messages]`
+Each entry begins with a labed, followed by a column. This label is not used for the display.
+The message can be longuer than the size of the display (20 characters). In this case the message is scrolled automatically.
+Exemple :
+`1: Hello world!`
 ### Dated messages
+In the section `[dated_messages]`, the configured messages depending on the date (in french format) corresponding to their label.
+Example :
+`25/12: Merry Christmas!`
+This message will only be displayed the 25th of december.
 ### Playlist
+The entries of the `[playlist]`section are the list of the titles and the url of the radio stations. They will appear in the same order as they appear in the configuration file.
+There is not limit on the number of configured stations
 
 There is a few additional thing you can freely configure. Be careful to not put the mess in the configuration.
-1. The clock format may be modified in order for instance to display the date/time in a more complete maner. The format is defined in the configuration file using the [clock]/format entry. The format definition may be found [here](https://strftime.org/). Be carefull to not exceed 20 characters.
+1. Welcome message may be modified in the `[general]` section. Take care to not exceed 16 characters.
+2. The clock format may be modified in order for instance to display the date/time in a more complete maner. The format is defined in the configuration file using the [clock]/format entry. The format definition may be found [in the description of the Python strftime function](https://strftime.org/). Be carefull to not exceed 20 characters.
 
 ## Reference
 [Mamema's radio development site](https://github.com/sebastienroy/mamemasradio)
