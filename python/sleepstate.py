@@ -59,7 +59,7 @@ class SleepState(RadioState):
                 self._ctxt.lcd.write_string(line.ljust(20))
         self._clock_rolling_text.resume()
 
-    def leav_state(self):
+    def leave_state(self):
         self._clock_rolling_text.pause()
 
     def handle_event(self, event):
