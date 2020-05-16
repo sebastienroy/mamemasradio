@@ -22,6 +22,7 @@ class Resources:
     SCROLL_END_ENTRY = "scroll_end_delay"
     CHOOSE_TIMEOUT_ENTRY = "choose_timout"
     VOLUME_TIMEOUT_ENTRY = "volume_timout"
+    BT_DISCOVERABLE_TIMEOUT_ENTRY = "bt_discoverable_timeout"
     VOLUME_INCREMENT_ENTRY = "volume_increment"
 
     WIFI_SECTION = "wifi"
@@ -58,7 +59,7 @@ class Resources:
     MUTE_ENTRY = "mute"
 
     SLEEP_SECTION = "sleep"
-    
+
     CLOCK_SECTION = "clock"
     CLOCK_FORMAT_ENTRY = "format"
 
@@ -170,6 +171,10 @@ class Resources:
         return float(self._configParser.get(Resources.GENERAL_SECTION,
                                             Resources.VOLUME_TIMEOUT_ENTRY))
 
+    def _get_bt_discoverable_timeout(self):
+        return float(self._configParser.get(Resources.GENERAL_SECTION,
+                                            Resources.BT_DISCOVERABLE_TIMEOUT_ENTRY))
+
     def _get_volume_increment(self):
         return float(self._configParser.get(Resources.GENERAL_SECTION,
                                             Resources.VOLUME_INCREMENT_ENTRY))
@@ -205,6 +210,7 @@ class Resources:
     scroll_end = property(fget=_get_scroll_end)
     choose_timeout = property(fget=_get_choose_timeout)
     volume_timeout = property(fget=_get_volume_timeout)
+    bt_discoverable_timeout = property(fget=_get_bt_discoverable_timeout)
     volume_increment = property(fget=_get_volume_increment)
     playlist = property(fget=_get_playlist)
     station_button = property(fget=_get_station_button)

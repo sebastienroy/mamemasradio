@@ -15,9 +15,11 @@ from threading import Thread, Event
 import RPi.GPIO as GPIO
 
 from radiostate import RadioState
+from volumestate import VolumeState
+from btidlestate import BtIdleState
 from resources import Resources
 from scrollingtext import ScrollingText
-from radioevents import TextUpdateEvent, TextFieldType, PowerButtonEvent, StationButtonEvent
+from radioevents import TextUpdateEvent, TextFieldType, PowerButtonEvent, StationButtonEvent, VolumeButtonEvent, VolumeTimeoutEvent
 from powerbutton import PowerEvent
 from encoder import EncoderEvent
 
@@ -41,7 +43,7 @@ class BlinkingThread(Thread):
         self._pause.clear()
 
     def resume(self):
-        """ Resules the thread
+        """ Resumes the thread
         """
         self._pause.set()
 
@@ -50,7 +52,7 @@ class BlinkingThread(Thread):
             self._pause.wait()
             time.sleep(0.5)
             self._callback()
-  
+
 
 class BluetoothState(RadioState):
     """ Bluetooth state is entered when the radio is off and the user press the
@@ -83,9 +85,17 @@ class BluetoothState(RadioState):
                                                  refresh_rate=1)
         self._clock_rolling_text.start()
         self._clock_rolling_text.pause()
-        
+
         self._blink_thread = None
         self._blinking = False
+        # substates
+        self._volume_state = VolumeState(self._ctxt, self)
+        self._idle_state = BtIdleState(self._ctxt, self)
+        self._sub_state = None
+        
+        # ensure the bluetooth device is pairable
+        subprocess.call(["bluetoothctl", "pairable", "on"])
+
         return
 
     def enter_state(self):
@@ -105,22 +115,22 @@ class BluetoothState(RadioState):
         mute_gpio = self._ctxt.rsc.mute_gpio
         if mute_gpio != 0:
             GPIO.output(mute_gpio, GPIO.HIGH)
-        # open all the bluetooth stuff
+        # power on the bluetooth stuff
         subprocess.call(["bluetoothctl", "power", "on"])
-        #subprocess.call(["bluetoothctl" ,"pairable", "on"])
-        #subprocess.call(["bluetoothctl" ,"discoverable", "on"])
-        # play what users ask for
+        # play what users want to
         self._aplay_proc = subprocess.Popen(["bluealsa-aplay","00:00:00:00:00:00"])
 
         self._ctxt.lcd.clear()
         self._ctxt.lcd.backlight_enabled = True
         self._ctxt.power_button.led = True
-        
+
         self._display_welcome()
+
+        self._sub_state = self._idle_state
+        self._sub_state.enter_state()
 
         self._clock_rolling_text.resume()
         self._random_msg_display.resume()
-
         return
 
     def leave_state(self):
@@ -132,8 +142,6 @@ class BluetoothState(RadioState):
         self._stop_blinking()
         self._clock_rolling_text.pause()
         self._random_msg_display.pause()
-
-
         return
 
     def handle_event(self, event):
@@ -145,6 +153,10 @@ class BluetoothState(RadioState):
                 self._stop_blinking()
             else:
                 self._start_blinking()
+        elif type(event) is VolumeTimeoutEvent:
+            self._leave_volume()
+        elif type(event) is VolumeButtonEvent:
+            self._change_volume(event)
         elif type(event) is TextUpdateEvent and event.originator == TextFieldType.RANDOM_MSG:
             self._ctxt.lcd.cursor_pos = (1, 0)
             self._ctxt.lcd.write_string(event.value.ljust(20))
@@ -157,14 +169,25 @@ class BluetoothState(RadioState):
     def cleanup(self):
         return
 
+    def _leave_volume(self):
+        if self._sub_state == self._volume_state:
+            self._sub_state.leave_state()
+            self._sub_state = self._idle_state
+            self._sub_state.enter_state()
+
+    def _change_volume(self, event):
+        if self._sub_state == self._volume_state:
+            self._sub_state.handle_event(event)
+        else:
+            self._volume_state.increment(event.value)
+            self._sub_state.leave_state()
+            self._sub_state = self._volume_state
+            self._sub_state.enter_state()
+
     def _display_welcome(self):
          msg = self._ctxt.rsc.welcome_msg.ljust(Resources.WELCOME_MSG_MAX_SIZE)
          self._ctxt.lcd.cursor_pos = (0, 0)
          self._ctxt.lcd.write_string(msg)
-
-         bt_msg = self._ctxt.rsc.get_i18n(Resources.BT_PLAYBACK_ENTRY)
-         self._ctxt.lcd.cursor_pos = (2, 0)
-         self._ctxt.lcd.write_string(bt_msg)
          return
 
     def _get_time_text(self):
@@ -180,7 +203,7 @@ class BluetoothState(RadioState):
 
     def _random_msg(self):
         return self.random_msg
-    
+
     def _start_blinking(self):
         self.logger.debug("switch to discoverable")
         self._blinking_starttime = time.time()
@@ -188,17 +211,17 @@ class BluetoothState(RadioState):
         self._blink_thread.start()
         self._blink_thread.resume()
         subprocess.call(["bluetoothctl", "discoverable", "on"])
-            
-        
+
     def _stop_blinking(self):
         if self._blink_thread is not None:
             self._blink_thread.stop()
             self._blink_thread = None
         self._ctxt.lcd.backlight_enabled = True
         subprocess.call(["bluetoothctl", "discoverable", "off"])
-   
+
     def blink(self):
         self.logger.debug("Blink!")
         self._ctxt.lcd.backlight_enabled = not(self._ctxt.lcd.backlight_enabled)
-        if self._ctxt.lcd.backlight_enabled and (time.time() - self._blinking_starttime) > 15:
+        if self._ctxt.lcd.backlight_enabled \
+                and (time.time() - self._blinking_starttime) > self._ctxt.rsc.bt_discoverable_timeout:
             self._stop_blinking()
