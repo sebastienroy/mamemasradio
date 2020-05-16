@@ -92,6 +92,9 @@ class OffState(RadioState):
         self._essid_state.cleanup()
         self._passwd_state.cleanup()
         self._sleep_state.cleanup()
+        
+    def switch_to_bluetooth(self):
+        self._owner.switch_to_bluetooth()
 
 def backup_file(filename, last=99):
     logger = logging.getLogger(__name__)

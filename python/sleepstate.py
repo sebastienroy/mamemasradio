@@ -71,6 +71,8 @@ class SleepState(RadioState):
                 self.encoder_pressed = True
             elif event.value == EncoderEvent.SWITCH_RELEASED:
                  self.encoder_pressed = False
+                 # bluetooth mode
+                 self._owner.switch_to_bluetooth()
         elif type(event) is PowerButtonEvent and event.value == PowerEvent.SWITCH_PRESSED:
             if self.encoder_pressed:
                 self._owner.enter_choose_essid()

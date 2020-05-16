@@ -23,6 +23,7 @@ from radioevents import WifiEvent, StationButtonEvent, VolumeButtonEvent, PowerB
 from radiocontext import RadioContext
 from onstate import OnState
 from offstate import OffState
+from bluetoothstate import BluetoothState
 from powerbutton import PowerButton
 from encoder import RotaryEncoder
 
@@ -116,6 +117,7 @@ class MamemasRadio:
 
         self._on_state = OnState(self._ctxt, self)
         self._off_state = OffState(self._ctxt, self)
+        self._bt_state = BluetoothState(self._ctxt, self)
         self._state = None
         # set callbacks
 
@@ -130,6 +132,17 @@ class MamemasRadio:
         else:
             self._state.leave_state()
             self._state = self._on_state if value else self._off_state
+            self._state.enter_state()
+            
+    def switch_to_bluetooth(self):
+        """ This method is called when radio station button is pressed an
+                released when it is in sleeping mode
+        """
+        if self._state is self._bt_state:
+            self.logger.error("Switch to bluetooth when already in bluetooth mode")
+        else:
+            self._state.leave_state()
+            self._state = self._bt_state
             self._state.enter_state()
 
     def _init_playlist(self):

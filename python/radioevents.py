@@ -30,6 +30,7 @@ class TextFieldType(Enum):
     RADIO_NAME = 2
     TRACK_TITLE = 3
     SLEEP_CLOCK = 4
+    BT_CLOCK = 5
 
 class TextUpdateEvent(RadioEvent):
     def __init__(self, value, text_field):

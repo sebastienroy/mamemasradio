@@ -31,6 +31,7 @@ class Resources:
 
     I18N_SECTION = "i18n"
     NO_TITLE_ENTRY = "no_title_msg"
+    BT_PLAYBACK_ENTRY = "bt_playback_msg"
     CHANGE_STATION_ENTRY = "change_station"
     CONFIRM_CHANGE_ENTRY = "confirm_change"
     NETWORK_CHOICE_ENTRY = "network_choice"

@@ -12,7 +12,7 @@ class RadioState:
         self._owner = owner
         return
 
-    def enter_state(self, context):
+    def enter_state(self):
         return
 
     def leave_state(self):
