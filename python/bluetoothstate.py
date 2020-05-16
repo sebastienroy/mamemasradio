@@ -95,6 +95,8 @@ class BluetoothState(RadioState):
         
         # ensure the bluetooth device is pairable
         subprocess.call(["bluetoothctl", "pairable", "on"])
+        subprocess.call(["bluetoothctl", "agent", "NoInputNoOutput"]) 
+        subprocess.call(["bluetoothctl", "default-agent"]) 
 
         return
 
