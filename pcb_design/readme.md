@@ -9,17 +9,18 @@ The Mamema's radio hardware consists in the following components
 * A power button
 * A 4x20 LCD display
 * 1 or 2 rotary encoders
+
 All these elements are driven from the Raspberry pi GPIO connector. However, because the soundcard is blugged as a hat onto the GPIO port, if the sound courd is plugged directly on the GPIO port, the port would not be available for other physical components.
-The idea is then to insert a PCB between the raspberry pi and the sound card, so that the sound coard can access to needed pins, and the remaining free pins are available for the other physical components.
+The idea is then to insert a PCB between the raspberry pi and the sound card, so that the sound card can have access to needed pins, and the remaining free pins are available for the other physical components.
 
 ## Manufacturing
 Main PCB and accessories PCB may be manufactured directly using these links :
-Main PCB :
+* Main PCB :
 https://aisler.net/p/ENDPOVDQ
-Accessories PCB :
+* Accessories PCB :
 https://aisler.net/p/QHNAFNPG
 
-The design has been made using Fritzing 0.9.3b
+The design has been made using Fritzing 0.9.3b.
 Unfortunately, Fritzing org currently asks people for paying to download the software, witch was not the case when Mamema's radio design was made.
 If you don't want to pay, you can still compile the sources by yourself.
 
