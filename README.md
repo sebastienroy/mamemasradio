@@ -13,7 +13,7 @@ This gave me an idea of Christmas present : I decided to build a radio receiver.
 In Alsace, where she lives, the word for "Grandmother" is "Mamema". This is the word my children use for her, and so this is the name I used for this radio receiver.
 
 ## Features
-* Plays audio stream using wifi network. No limit for the number of programmable radio stations
+* Plays audio stream through wifi network. No limit for the number of programmable radio stations
 * Can also be used as a bluetooth speaker
 * Uses classics physical commands : power button, rotary buttons
 * Built around a raspberry pi zero low cost - low power consumption nano computer
