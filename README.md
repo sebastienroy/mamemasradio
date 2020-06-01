@@ -1,5 +1,7 @@
 # Mamema's radio
-The description of how to build a web radio receiver
+A web radio receiver with a classical hifi style ergonomy
+
+![Mamema's radio](https://github.com/sebastienroy/mamemasradio/blob/develop/documentation/pictures/radio_front_on_500px.jpg)
 
 ## History
 
@@ -10,13 +12,23 @@ This gave me an idea of Christmas present : I decided to build a radio receiver.
 
 In Alsace, where she lives, the word for "Grandmother" is "Mamema". This is the word my children use for her, and so this is the name I used for this radio receiver.
 
+## Features
+* Plays audio stream through wifi network. No limit for the number of programmable radio stations
+* Can also be used as a bluetooth speaker
+* Uses classics physical commands : power button, rotary buttons
+* Built around a raspberry pi zero low cost - low power consumption nano computer
+* Displays personnalisable messages and birthdays reminders : perfect as a present for your family members. No limitation for the length of the message, the text scrolls if wider than the screen
+* Can be built as a standalone radio, integrating speakers and an amplifier, or as an audio source for a separated stereo amplifier
+
 ## General design
 ### Hardware
 * Raspberry Pi Zero W
-* Soundcard : Hifiberry DAC+ Zero, or Hifiberry Miniamp
+* Soundcard :  Hifiberry Miniamp (standalone radio), or Hifiberry DAC+ Zero (audio source for external hifi amplifier)
+* Loud speakers (standalone radio)
 * Man-Machine interface elements : LCD display, rotary encoder, power button
-* Interface pcb : a way to make electrical links from the Raspberry GPIO ports and the interface elements
+* Interface pcb and accessories pcb : a way to make electrical links from the Raspberry GPIO ports and the interface elements. To be manufactured by a dedicated factory (links provided)
 * Casing.
 ### Software
-* Radio stream player
-* interface "glue"
+* Radio stream player (Music Player Daemon)
+* User interactions managed by python software components (specific developments)
+* Based on Raspbian operating system

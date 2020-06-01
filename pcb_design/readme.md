@@ -2,6 +2,16 @@
 This directory contains the design document describing the pcb design of the webradio.
 
 The pcb consists in a main interface pcb and some accessories pcb
+
+* Main pcb :
+
+![main pcb schema](https://github.com/sebastienroy/mamemasradio/blob/develop/pcb_design/pictures/mainpcb_thumb.png)
+
+* Accessories pcb :
+
+![accessories pcb schema](https://github.com/sebastienroy/mamemasradio/blob/develop/pcb_design/pictures/accessoriespcb_thumb.png)
+
+
 ## Purpose of the pcb
 The Mamema's radio hardware consists in the following components
 * A Raspberry pi zero W nano computer
@@ -20,14 +30,16 @@ https://aisler.net/p/ENDPOVDQ
 * Accessories PCB :
 https://aisler.net/p/QHNAFNPG
 
+The accessories board has to be cut into 6 parts : 4 rotary encoder supports, and 2 power button supports. Thus, one accessories board can be used to make two separate Mamema's radios.
+
 The design has been made using Fritzing 0.9.3b.
 Unfortunately, Fritzing org currently asks people for paying to download the software, witch was not the case when Mamema's radio design was made.
 If you don't want to pay, you can still compile the sources by yourself.
 
 ## Design documents
 
-* webradio_pcb.fzz document describes the main pcb of the web radio. It is used to connect the raspberry pi zero w component to a power button, a rotary encoder used to change the radio station, and optionnaly to another rotary encoder that can be used to change the volume.
-* accessories_pcb.fzz document describes accessories pcb. The described pcb has to be cut into 6 parts : 4 rotary encoder pcb and 2 power button pcb. So, parts described by this document can be used for the build of 2 web radios.
+* webradio_pcb.fzz document describes the main pcb of the web radio. It is used to connect the raspberry pi zero w component to an LCD display, a power button, a rotary encoder used to change the radio station, and optionnaly to another rotary encoder that can be used to change the volume. This pcb also holds a logic level converter (in order to convert voltage from 3.3V from the raspberry to 5V for the LCD display) and a resistor needed for the power button LED.
+* accessories_pcb.fzz document describes accessories pcb. The described pcb has to be cut into 6 parts as described above. These parts are used as support to connect the rotary encoder and the power button, but they are also used to attach these components on the case of the radio. The power button in particular cannot be attached on the case by itself.
 
 The connection between the main pcb and the accessories pcb use F2510-4P connectors. The male F2510-4P headers are soldered on the main pcbs, male dupont headers are soldered on the accessories pcb.
 Wires are used between them.
