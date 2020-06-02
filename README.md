@@ -17,7 +17,7 @@ In Alsace, where she lives, the word for "Grandmother" is "Mamema". This is the 
 * Can also be used as a bluetooth speaker
 * Uses classics physical commands : power button, rotary buttons
 * Built around a raspberry pi zero low cost - low power consumption nano computer
-* Excellent audio quality : uses high quality sound card.
+* Excellent audio quality : uses a high quality sound card.
 * Displays personnalisable messages and birthdays reminders : perfect as a present for your family members. No limitation for the length of the message, the text scrolls if wider than the screen
 * Can be built as a standalone radio, integrating speakers and an amplifier, or as an audio source for a separated stereo amplifier
 
